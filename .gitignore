@@ -1,0 +1,37 @@
+# Node modules
+node_modules/
+
+# Environment Variables
+.env
+*.env
+
+# Log files
+logs/
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Compiled code
+dist/
+build/
+
+# AWS SAM and Lambda Packaging
+.lambda-build/
+lambda-function.zip
+
+# Coverage reports
+coverage/
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# Miscellaneous
+*.tmp
+*.swp
+
+#Zip files 
+*.zip

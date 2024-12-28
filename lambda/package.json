@@ -1,0 +1,10 @@
+{
+  "scripts": {
+    "zipUp": "zip -r lambda-function.zip ."
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1692.0",
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.5"
+  }
+}
