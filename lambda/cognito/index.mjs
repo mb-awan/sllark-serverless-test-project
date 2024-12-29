@@ -1,5 +1,5 @@
 import AWS from 'aws-sdk';
-import { TABLE_NAMES, API_RESPONSES, USER_ROLES } from '../constants/index.mjs';
+import { TABLE_NAMES, USER_ROLES } from '../constants/index.mjs';
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = TABLE_NAMES.USERS;
@@ -12,10 +12,10 @@ export const handler = async (event) => {
     TableName: TABLE_NAME,
     Item: {
       userId: userName, // Cognito user ID
-      email: email,
-      name: name,
+      email,
+      name,
       createdAt: new Date().toISOString(),
-      role: USER_ROLES.TECH
+      role: USER_ROLES.TECH,
     },
   };
 
@@ -26,7 +26,7 @@ export const handler = async (event) => {
     return event;
   } catch (error) {
     console.error('Error adding user to DynamoDB:', error);
-    
+
     throw new Error('Failed to add user to DynamoDB');
   }
 };
