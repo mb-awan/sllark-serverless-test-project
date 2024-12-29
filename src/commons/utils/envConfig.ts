@@ -5,7 +5,7 @@ import path from 'path';
 
 const nodeEnvironment = process.env.NODE_ENV || 'development';
 
-const envPath = nodeEnvironment !== 'production' ? path.resolve(process.cwd(), `.env.${nodeEnvironment}`) : null;
+const envPath = process.env.NODE_ENV ? `.env.${nodeEnvironment}` : '.env';
 
 if (envPath && fs.existsSync(envPath)) {
   dotenv.config({ path: envPath });

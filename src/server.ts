@@ -7,7 +7,7 @@ import helmet from 'helmet'; // Adds security headers
 import { pino } from 'pino'; // Logger for application
 
 // Import routers and middleware
-import { authRoutes } from '@/api/auth/authRouter';
+import { authRouter } from '@/api/auth/authRouter';
 import { healthCheckRouter } from '@/api/healthCheck/healthCheckRouter';
 import { openAPIRouter } from '@/api-docs/openAPIRouter';
 import errorHandler from '@/commons/middleware/errorHandler';
@@ -16,6 +16,7 @@ import { env } from '@/commons/utils/envConfig';
 
 // Import constants
 import { API_ROUTES } from './commons/constants/common';
+import { apiRouter } from './router';
 
 // Initialize logger
 const logger = pino({ name: 'server start' });
@@ -49,10 +50,7 @@ app.use(rateLimiter);
 // Define application routes
 
 // Health-check route to verify server status
-app.use(API_ROUTES.HEALTH_CHECK, healthCheckRouter);
-
-// Authentication routes
-app.use(API_ROUTES.AUTH, authRoutes);
+app.use('/api', apiRouter);
 
 // Swagger/OpenAPI route for API documentation
 app.use(openAPIRouter);

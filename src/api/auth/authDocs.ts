@@ -105,7 +105,6 @@ authRegistry.registerPath({
     This endpoint allows users to login by providing their credentials:
       - Validation: Ensure at least one of email, username, or phone is provided along with the password.
       - Authentication: Verify the user's credentials and generate an access token if valid.
-      - Two-Factor Authentication: If TFA is enabled, verify the TFA code.
   `,
   path: `${API_ROUTES.AUTH}${AUTH_PATHS.LOGIN}`,
   request: {

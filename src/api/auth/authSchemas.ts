@@ -27,7 +27,5 @@ export const LoginUserValidationSchema = z
   .object({
     identifier: commonValidations.identifier,
     password: commonValidations.password,
-
-    fromAdminPanel: z.boolean().optional().default(false).describe('to test that the login request is from admin'),
   })
   .strict();

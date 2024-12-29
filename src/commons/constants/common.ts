@@ -1,7 +1,7 @@
 export const API_ROUTES = {
-  HEALTH_CHECK: '/api/health-check',
-  AUTH: '/api/auth',
-  ALIGNMENT: '/api/alignment',
+  HEALTH_CHECK: '/health-check',
+  AUTH: '/auth',
+  ALIGNMENT: '/alignment',
 };
 
 export const TABLE_NAMES = {

@@ -16,7 +16,7 @@ export const AUTH_PATHS = {
   LOGIN: '/login',
 };
 
-export const authRoutes: Router = (() => {
+export const authRouter: Router = (() => {
   const router = express.Router();
 
   router.post(AUTH_PATHS.REGISTER, validateRequest(RegisterUserValidationSchema), registerUser);
