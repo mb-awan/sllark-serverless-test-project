@@ -1,3 +1,4 @@
+import { openAPIRouter } from './api-docs/openAPIRouter';
 import { authRouter } from './api/auth/authRouter';
 import { healthCheckRouter } from './api/healthCheck/healthCheckRouter';
 import { API_ROUTES } from './commons/constants/common';
@@ -8,6 +9,9 @@ export const apiRouter: Router = (() => {
 
   router.use(API_ROUTES.HEALTH_CHECK, healthCheckRouter);
   router.use(API_ROUTES.AUTH, authRouter);
+
+  // Swagger/OpenAPI route for API documentation
+  router.use(API_ROUTES.DOCS,openAPIRouter);
 
   return router;
 })();

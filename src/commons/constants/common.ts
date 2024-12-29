@@ -2,6 +2,7 @@ export const API_ROUTES = {
   HEALTH_CHECK: '/health-check',
   AUTH: '/auth',
   ALIGNMENT: '/alignment',
+  DOCS: '/docs',
 };
 
 export const TABLE_NAMES = {

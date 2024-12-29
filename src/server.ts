@@ -6,16 +6,10 @@ import express, { Express } from 'express';
 import helmet from 'helmet'; // Adds security headers
 import { pino } from 'pino'; // Logger for application
 
-// Import routers and middleware
-import { authRouter } from '@/api/auth/authRouter';
-import { healthCheckRouter } from '@/api/healthCheck/healthCheckRouter';
-import { openAPIRouter } from '@/api-docs/openAPIRouter';
 import errorHandler from '@/commons/middleware/errorHandler';
 import rateLimiter from '@/commons/middleware/rateLimiter';
 import { env } from '@/commons/utils/envConfig';
 
-// Import constants
-import { API_ROUTES } from './commons/constants/common';
 import { apiRouter } from './router';
 
 // Initialize logger
@@ -51,9 +45,6 @@ app.use(rateLimiter);
 
 // Health-check route to verify server status
 app.use('/api', apiRouter);
-
-// Swagger/OpenAPI route for API documentation
-app.use(openAPIRouter);
 
 // Middleware: Error handling (must be added last)
 app.use(errorHandler());
