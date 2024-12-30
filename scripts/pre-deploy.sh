@@ -5,7 +5,7 @@ rm -f apis.zip
 npm run build
 
 # Create the zip file including both 'dist' directory and '.env.production' file
-zip -rq apis.zip dist .env.production node_modules
+zip -rq apis.zip src .env.production node_modules
 
 # List the size of the created zip file
 ls -lh apis.zip

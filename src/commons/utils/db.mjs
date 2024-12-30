@@ -1,5 +1,5 @@
-import dynamoDB from './dynamoDBConfig';
-import { logger } from '@/server';
+import dynamoDB from './dynamoDBConfig.mjs';
+import { logger } from '../../server.mjs';
 
 const TABLE_NAME = 'users_table'; // Replace with your table name
 
@@ -19,7 +19,7 @@ const connectToDynamoDB = async () => {
 };
 
 // Transform data before saving or returning (optional)
-const transformData = (item: any) => {
+const transformData = (item) => {
   // Example: Convert DynamoDB keys to a more user-friendly format
   const { userId, ...rest } = item;
   return { id: userId, ...rest };

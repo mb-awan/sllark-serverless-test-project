@@ -1,5 +1,5 @@
-import { env } from '@/commons/utils/envConfig';
-import { app, logger } from '@/server';
+import { env } from './commons/utils/envConfig.mjs';
+import { app, logger } from './server.mjs';
 
 const server = app.listen(env.PORT, () => {
   const { NODE_ENV, HOST, PORT } = env;
@@ -17,3 +17,4 @@ const onCloseSignal = () => {
 
 process.on('SIGINT', onCloseSignal);
 process.on('SIGTERM', onCloseSignal);
+

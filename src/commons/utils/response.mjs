@@ -1,7 +1,5 @@
-import { Response } from 'express';
-
 export const APIResponse = {
-  success: (res: Response, message: string, data?: any, statusCode = 200) => {
+  success: (res, message, data = {}, statusCode = 200) => {
     return res.status(statusCode).json({
       success: true,
       message,
@@ -9,7 +7,7 @@ export const APIResponse = {
     });
   },
 
-  error: (res: Response, message: string, error?: any, statusCode = 400) => {
+  error: (res, message, error = null, statusCode = 400) => {
     return res.status(statusCode).json({
       success: false,
       message,
@@ -17,3 +15,4 @@ export const APIResponse = {
     });
   },
 };
+

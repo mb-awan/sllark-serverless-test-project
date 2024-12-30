@@ -1,12 +1,11 @@
-import { Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 
-import { logger } from '@/server';
+import { logger } from '../../server.mjs';
 
-import { APIResponse } from './response';
+import { APIResponse } from './response.mjs';
 
 // General error handling function for API errors
-export const handleError = (error: any, res: Response, customMessage?: string) => {
+export const handleError = (error, res, customMessage) => {
   if (error.response) {
     // Axios error: server responded with a status other than 2xx
     logger.error('Error response from external service:', {
@@ -58,3 +57,4 @@ export const handleError = (error: any, res: Response, customMessage?: string) =
     );
   }
 };
+

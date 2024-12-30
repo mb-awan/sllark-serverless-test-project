@@ -1,14 +1,13 @@
-import { OpenApiGeneratorV3, OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
+import {
+  OpenApiGeneratorV3,
+  OpenAPIRegistry,
+} from '@asteasolutions/zod-to-openapi';
 
-
-import { authRegistry } from '@/api/auth/authDocs';
-import { healthCheckRegistry } from '@/api/healthCheck/healthCheckRouter';
+import { healthCheckRegistry } from '../api/healthCheck/healthCheckRouter.mjs';
+import { authRegistry } from '../api/auth/authDocs.mjs';
 
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([
-    healthCheckRegistry,
-    authRegistry,
-  ]);
+  const registry = new OpenAPIRegistry([healthCheckRegistry, authRegistry]);
 
   // Register the security scheme
   registry.registerComponent('securitySchemes', 'bearerAuth', {
@@ -25,7 +24,6 @@ export function generateOpenAPIDocument() {
       version: '1.0.0',
       title: 'AWS Lambda Function for Wheel Alignment API Demo',
       description: 'API for the Wheel Alignment iOS App',
-      
     },
     externalDocs: {
       description: 'API Documentation',
@@ -33,3 +31,4 @@ export function generateOpenAPIDocument() {
     },
   });
 }
+

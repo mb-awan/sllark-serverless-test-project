@@ -1,13 +1,12 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 
-import { API_ROUTES } from '@/commons/constants/common';
-
-import { AUTH_PATHS } from './authRouter';
+import { AUTH_PATHS } from './authRouter.mjs';
 import {
   LoginUserValidationSchema,
   RegisterUserValidationSchema,
-} from './authSchemas';
+} from './authSchemas.mjs';
+import { API_ROUTES } from '../../commons/constants/common.mjs';
 
 export const authRegistry = new OpenAPIRegistry();
 
@@ -182,3 +181,4 @@ authRegistry.registerPath({
     },
   },
 });
+

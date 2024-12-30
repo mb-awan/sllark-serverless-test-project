@@ -1,7 +1,6 @@
 import { extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
-
-import { commonValidations } from '@/commons/utils/commonValidation';
+import { commonValidations } from '../../commons/utils/commonValidation.mjs';
 
 extendZodWithOpenApi(z);
 
@@ -29,3 +28,4 @@ export const LoginUserValidationSchema = z
     password: commonValidations.password,
   })
   .strict();
+

@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
-const validaMongoIdSchema = z.string().regex(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i, 'Role must be a valid ObjectId');
+const validaMongoIdSchema = z
+  .string()
+  .regex(
+    /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i,
+    'Role must be a valid ObjectId'
+  );
 
 const UsernameValidationShema = z
   .string({ required_error: 'username is required' })
@@ -21,7 +26,8 @@ const UserUniqueSearchKeys = z
   .strict()
   .refine((data) => data.email || data.id || data.username || data.phone, {
     path: ['id', 'username', 'email', 'phone'],
-    message: 'At least one of userId, email, username, or phone must be provided',
+    message:
+      'At least one of userId, email, username, or phone must be provided',
   });
 
 export const AddressValidateSchema = z
@@ -34,10 +40,10 @@ export const AddressValidateSchema = z
   })
   .strict();
 
-const isPhoneNumber = (value: string) => /^(\+?[0-9]{1,3})?([0-9]{10})$/.test(value);
+const isPhoneNumber = (value) => /^(\+?[0-9]{1,3})?([0-9]{10})$/.test(value);
 
 // Function to check if a string is a valid username (alphanumeric only in this example)
-const isUsername = (value: string) => /^[a-zA-Z0-9_]+$/.test(value);
+const isUsername = (value) => /^[a-zA-Z0-9_]+$/.test(value);
 
 export const commonValidations = {
   id: z
@@ -51,7 +57,11 @@ export const commonValidations = {
   identifier: z.string().refine(
     (value) => {
       // If it's a phone number or email or username, we return true
-      return isPhoneNumber(value) || isUsername(value) || z.string().email().safeParse(value).success;
+      return (
+        isPhoneNumber(value) ||
+        isUsername(value) ||
+        z.string().email().safeParse(value).success
+      );
     },
     {
       message: 'Invalid input',
@@ -66,7 +76,10 @@ export const commonValidations = {
     .regex(/[a-z]/, 'Password must contain at least one lowercase letter')
     .regex(/[A-Z]/, 'Password must contain at least one uppercase letter')
     .regex(/[0-9]/, 'Password must contain at least one number')
-    .regex(/[^a-zA-Z0-9]/, 'Password must contain at least one special character'),
+    .regex(
+      /[^a-zA-Z0-9]/,
+      'Password must contain at least one special character'
+    ),
 
   username: UsernameValidationShema,
 
@@ -74,3 +87,4 @@ export const commonValidations = {
 
   address: AddressValidateSchema,
 };
+

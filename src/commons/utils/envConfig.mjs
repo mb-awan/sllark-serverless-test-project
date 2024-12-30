@@ -1,7 +1,6 @@
 import dotenv from 'dotenv';
 import { cleanEnv, host, num, port, str, testOnly, url } from 'envalid';
 import fs from 'fs';
-import path from 'path';
 
 const nodeEnvironment = process.env.NODE_ENV || 'development';
 
@@ -26,11 +25,16 @@ export const env = cleanEnv(process.env, {
   DAAS_PRIVATE_KEY: str({ devDefault: testOnly('') }),
   DAAS_BASE_URL: url({ devDefault: testOnly('') }),
 
-  NODE_ENV: str({ devDefault: testOnly('test'), choices: ['development', 'production', 'test'] }),
+  NODE_ENV: str({
+    devDefault: testOnly('test'),
+    choices: ['development', 'production', 'test'],
+  }),
   PORT: port({ devDefault: testOnly(3000) }),
   HOST: host({ devDefault: testOnly('localhost') }),
 
-  CORS_ORIGIN: str({ devDefault: testOnly('http://localhost:3000;http://localhost:3001') }),
+  CORS_ORIGIN: str({
+    devDefault: testOnly('http://localhost:3000;http://localhost:3001'),
+  }),
 
   COMMON_RATE_LIMIT_MAX_REQUESTS: num({ devDefault: testOnly(1000) }),
   COMMON_RATE_LIMIT_WINDOW_MS: num({ devDefault: testOnly(1000) }),
