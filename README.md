@@ -1,105 +1,141 @@
 # 🚀 AWS Lambda Function for Wheel Alignment API
 
+This project implements a highly modular AWS Lambda function for managing wheel alignment sessions. It includes integration with **DynamoDB**, **Swagger APIs**, with automated setup scripts for efficient deployment.
+
+
 ## 📚 Project Overview
 
-This project implements an AWS Lambda function for managing wheel alignment sessions. It includes error handling, DynamoDB integration, and unit tests for robust functionality.
+- **DynamoDB Integration**: Automatically creates required tables and indexes during the setup process and proper logging.
+- **API Documentation**: Swagger API documentation is available at `/api/docs`.
+- **Robust Error Handling**: Centralized error handling with rate limiting and authentication middleware.
+- **Automated Deployment**: Includes scripts to package files for deploy to AWS Lambda.
 
+---
 
 ## 🛠️ Getting Started
 
-### Step 1: ⚙️ Environment Configuration
+### Prerequisites
 
-1. **Clone the Repository**:
+1. **Install AWS CLI**:
+   Ensure the AWS CLI is installed and configured. Run the following commands to verify:
    ```bash
-   git clone <repository-url>
-   cd lambda
+   aws --version
+   aws configure
+   ```
+   Provide your `AWS Access Key`, `Secret Key`, `Default Region`, and `Output Format`.
+
+2. **Install Node.js**:
+   Ensure you have Node.js installed (preferably v22+). Verify using:
+   ```bash
+   node -v
+   npm -v
    ```
 
-2. **Set Up Environment Variables**:
-   - Create a `.env` file by copying `.env.example`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Update the `.env` file with the following details:
-     ```env
-     AWS_REGION=<your-aws-region>
-     NODE_ENV=dev
-     API_BASE_URL=https://api.example.com/v1
-     DAAS_PUBLIC_KEY=<your-public-key>
-     DAAS_PRIVATE_KEY=<your-private-key>
-     DAAS_BASE_URL=https://daas-api.example.com
-     ```
-
 3. **Install Dependencies**:
+   Clone the repository and install project dependencies:
    ```bash
    npm install
    ```
 
 ---
 
-### Step 2: 🏃‍♂️ Running the Project Locally
+### Step 1: ⚙️ Environment Configuration
 
-1. **Set Up AWS SAM CLI**:
-   - Install the AWS SAM CLI: [Install Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html).
-   - Run the following command to verify:
+1. **Set Up Environment Variables**:
+   - Create a `.env` file from the template:
      ```bash
-     sam --version
+     cp .env.example .env
      ```
-
-2. **Run the Lambda Function Locally**:
-   - Create a test event file `event.json`:
-     ```json
-     {
-       "request": {
-         "userAttributes": {
-           "email": "test@example.com",
-           "name": "Test User"
-         }
-       },
-       "userName": "test-user"
-     }
+   - Fill in the required values in `.env`. For example:
+     ```env
+     AWS_REGION=ap-south-1
+     CORS_ORIGIN=http://localhost:3000;https://example.com
+     NODE_ENV=development
+     PORT=4000
+     HOST=localhost
+     JWT_SECRET_KEY=<your-secret-key>
+     JWT_EXPIRES_IN=7d
+     BCRYPT_SALT_ROUNDS=10
+     COMMON_RATE_LIMIT_WINDOW_MS=60000
+     COMMON_RATE_LIMIT_MAX_REQUESTS=100
      ```
-   - Use SAM CLI to invoke the function:
-     ```bash
-     sam local invoke "MyLambdaFunction" -e event.json
-     ```
-
-3. **Test Using Mock DynamoDB**:
-   - Install and run [DynamoDB Local](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) to simulate the database locally.
-   - Update `.env` to point to the local DynamoDB endpoint.
 
 ---
 
-### Step 3: 🚀 Deploying to AWS
+### Step 2: 🏗️ Local Development
 
-1. **Zip the Function**:
+To run the project locally:
+
+1. **Start the Local Server**:
    ```bash
-   npm run zipUp
+   npm run dev
    ```
 
-2. **Deploy the Function**:
-   - Create an AWS Lambda function:
-     ```bash
-     aws lambda create-function \
-       --function-name WheelAlignmentLambda \
-       --runtime nodejs22.x \
-       --role arn:aws:iam::your-role-arn \
-       --handler cognito/index.handler \
-       --zip-file fileb://lambda-function.zip
-     ```
+2. **Local DynamoDB Configuration**:
+   Ensure your AWS CLI is properly configured to point to a live DynamoDB instance.
 
-3. **Set Up API Gateway**:
-   - Create an API Gateway with endpoints `/alignments` (GET, POST) as specified in the Swagger file.
+---
 
-4. **Create DynamoDB Tables**:
-   - Example for `users_table`:
-     ```bash
-     aws dynamodb create-table \
-       --table-name users_table \
-       --attribute-definitions AttributeName=userId,AttributeType=S \
-       --key-schema AttributeName=userId,KeyType=HASH \
-       --billing-mode PAY_PER_REQUEST
-     ```
+### Step 3: 🚀 Deploy to AWS
+
+1. **Package the Lambda Function**:
+   Use the included script to zip the required files for deployment:
+   ```bash
+   npm run deploy
+   ```
+   This creates a `lambda.zip` file containing the source code.
+
+2. **Upload to Lambda**:
+   - Go to the [AWS Lambda Console](https://console.aws.amazon.com/lambda/).
+   - Create a new function or update an existing one.
+   - Upload the `lambda.zip` file.
+
+3. **API Gateway Configuration**:
+   - Set up API Gateway as lambda trigger.
+
+4. **Verify the Deployment**:
+   Test the endpoints using tools like **Postman** or **Swagger UI**.
+
+---
+
+## 📂 Project Structure
+
+```plaintext
+📁
+├── 📁 scripts                 # Utility scripts for deployment
+│   └── zip-folder.mjs         # Automates packaging of the Lambda function
+├── 📁 src                     # Main source code
+│   ├── 📁 api                 # API layer
+│   │   ├── 📁 api-docs        # Swagger documentation
+│   │   │   ├── openAPIDocumentGenerator.mjs
+│   │   │   ├── openAPIResponseBuilders.mjs
+│   │   │   ├── openAPIRouter.mjs
+│   │   │   ├── 📁 alignments  # Alignment-related API documentation
+│   │   │   ├── 📁 auth        # Authentication-related API documentation
+│   │   │   └── 📁 healthCheck # Health check APIs
+│   ├── 📁 commons             # Shared utilities, middleware, and constants
+│   │   ├── 📁 constants       # Constants used across the application
+│   │   ├── 📁 db              # DynamoDB operations and configuration
+│   │   ├── 📁 middleware      # Middleware (e.g., rate limiter, error handler)
+│   │   └── 📁 utils           # Utility functions
+│   ├── index.mjs              # Entry point for the Lambda function
+│   ├── router.mjs             # Main router for API routes
+│   ├── server.mjs             # Express server configuration (if needed locally)
+│   └── serverless.js          # Serverless framework configuration (optional)
+├── .env.example               # Template for environment variables
+├── .gitignore                 # Git ignore file
+├── lambda.zip                 # Packaged Lambda zip file
+├── package-lock.json          # Node.js dependencies lock file
+├── package.json               # Node.js dependencies and scripts
+└── README.md                  # Project documentation
+```
+
+---
+
+## 🔧 Automated Table Creation
+
+- During deployment or local startup, the required DynamoDB tables will be automatically created if they do not already exist.
+- Indexes will also be set up as defined in the `dynamoDBConfig.mjs` file.
 
 ---
 
@@ -110,30 +146,10 @@ This project implements an AWS Lambda function for managing wheel alignment sess
    npm test
    ```
 
-2. **Example Test Command**:
-   - Unit test script located in `tests` folder:
-     ```bash
-     jest --config=jest.config.js
-     ```
+## 🌟 Swagger Documentation
 
----
-
-## 🔄 Project Structure
-
-```plaintext
-📁 lambda
-├── 📁 cognito
-│   └── index.mjs         # Cognito Lambda Handler
-├── 📁 constants          # Contains constants for API responses, environment, etc.
-├── 📁 DaaS
-│   ├── daasClient.mjs    # DaaS API Client
-│   └── index.mjs         # DaaS Lambda Handler
-├── .env                  # Environment Variables
-├── .env.example          # Environment Variables Template 
-├── package.json          # Node.js Dependencies
-├── API.yml               # Swagger API Specification
-└── README.md             # Project Documentation
-```
+- Swagger APIs are hosted at `/api/docs`.
+- Use `openAPIDocumentGenerator.mjs` to customize the API documentation dynamically.
 
 ---
 
@@ -144,25 +160,28 @@ This project implements an AWS Lambda function for managing wheel alignment sess
   - Use `.env.example` for sharing environment variable templates.
 
 - **Error Handling**:
-  - Always log detailed errors in development.
-  - Use generic error messages for production.
+  - Log detailed errors during development.
+  - Use generic error messages in production.
 
-- **Testing**:
-  - Cover edge cases like missing data, invalid inputs, and DynamoDB errors.
-  - Use mocking libraries to test AWS services locally.
+- **Rate Limiting**:
+  - Use `rateLimiter.mjs` to prevent abuse of your API.
+
+- **Security**:
+  - Rotate your `JWT_SECRET_KEY` regularly.
+  - Secure sensitive API keys in AWS Secrets Manager.
 
 ---
 
 ## 🤔 Troubleshooting
 
-- **Common Errors**:
-  - _"Access Denied"_: Check IAM permissions for the Lambda function.
-  - _"DynamoDB Table Not Found"_: Ensure the table exists and the correct region is specified.
+- **Access Denied Errors**:
+  - Ensure the Lambda function has the correct IAM role permissions to access DynamoDB.
+  - Add `ListTables` action to your role for debugging.
 
-- **Debugging**:
-  - Use `sam logs` to view logs for local runs:
-    ```bash
-    sam logs -n MyLambdaFunction
-    ```
+- **CORS Issues**:
+  - Verify the `CORS_ORIGIN` values in your `.env` file match the origin of your client application.
+
+- **DynamoDB Table Not Found**:
+  - Ensure the tables are created in the correct AWS region.
 
 ---
