@@ -12,3 +12,8 @@ export const TABLE_NAMES = {
   USERS: 'users_table',
   VEHICLES: 'vehicles_table',
 };
+
+export const USER_ROLES = {
+  TECH: 'technician',
+  ADMIN: 'admin',
+};

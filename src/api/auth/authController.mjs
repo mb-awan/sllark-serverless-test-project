@@ -1,54 +1,89 @@
 import { StatusCodes } from 'http-status-codes';
 import { APIResponse } from '../../commons/utils/response.mjs';
-import { logger } from '../../server.mjs';
+import { handleError } from '../../commons/utils/handleError.mjs';
+import {
+  generateToken,
+  hashPassword,
+  isValidPassword,
+} from '../../commons/utils/auth.mjs';
+import { TABLE_NAMES, USER_ROLES } from '../../commons/constants/common.mjs';
+import { getUser, createUser } from '../../commons/db/usersOps.mjs';
+import { ensureTableExists } from '../../commons/db/commonOps.mjs';
 
 export const registerUser = async (req, res) => {
   try {
-    const { firstName, lastName, email, password, confirmPassword } = req.body;
+    const { username, email, name, password } = req.body;
 
-    console.log({ firstName, lastName, email, password, confirmPassword });
+    await ensureTableExists(TABLE_NAMES.USERS);
+
+    const hashedPassword = await hashPassword(password);
+
+    const newUser = {
+      userId: username,
+      email,
+      name,
+      createdAt: new Date().toISOString(),
+      role: USER_ROLES.TECH,
+      password: hashedPassword,
+    };
+
+    const user = await createUser(newUser);
+
+    if (user.alreadyExists) {
+      return APIResponse.error(
+        res,
+        'User already exists',
+        StatusCodes.CONFLICT
+      );
+    }
+
+    const token = generateToken(user);
 
     return APIResponse.success(
       res,
       'User registered successfully',
-      { token: '' },
+      { token },
       StatusCodes.CREATED
     );
   } catch (error) {
-    console.log({ error });
-
-    logger.error('Error while registering 456', JSON.stringify(error));
-    return APIResponse.error(
-      res,
-      'Error while registering',
-      error,
-      StatusCodes.INTERNAL_SERVER_ERROR
-    );
+    handleError(error, res);
   }
 };
 
-// Login user controller
 export const loginUser = async (req, res) => {
   try {
     const { identifier, password } = req.body;
 
-    console.log({ identifier, password });
+    await ensureTableExists(TABLE_NAMES.USERS);
+
+    const user = await getUser(identifier);
+
+    if (!user) {
+      return APIResponse.error(
+        res,
+        'Invalid Credentials',
+        StatusCodes.UNAUTHORIZED
+      );
+    }
+
+    const isPasswordValid = await isValidPassword(password, user.password);
+    if (!isPasswordValid) {
+      return APIResponse.error(
+        res,
+        'Invalid Credentials',
+        StatusCodes.UNAUTHORIZED
+      );
+    }
+
+    const token = generateToken(user);
 
     return APIResponse.success(
       res,
       'Logged in successfully',
-      {
-        token: '',
-      },
+      { token },
       StatusCodes.OK
     );
   } catch (error) {
-    console.log({ error });
-    return APIResponse.error(
-      res,
-      'Internal server error',
-      error,
-      StatusCodes.INTERNAL_SERVER_ERROR
-    );
+    handleError(error, res);
   }
 };

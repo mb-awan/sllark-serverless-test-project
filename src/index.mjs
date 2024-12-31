@@ -1,5 +1,6 @@
 import { env } from './commons/utils/envConfig.mjs';
 import { app, logger } from './server.mjs';
+import './commons/db/dynamoDBConfig.mjs';
 
 const server = app.listen(env.PORT, () => {
   const { NODE_ENV, HOST, PORT } = env;

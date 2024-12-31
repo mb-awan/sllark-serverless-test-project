@@ -1,5 +1,6 @@
 import AWS from 'aws-sdk';
 import { TABLE_NAMES, USER_ROLES } from '../constants/index.mjs';
+import { logger } from '../../src/server.mjs';
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = TABLE_NAMES.USERS;
@@ -21,12 +22,13 @@ export const handler = async (event) => {
 
   try {
     await dynamoDB.put(params).promise();
-    console.log('User added to DynamoDB:', params.Item);
+    logger.info('User added to DynamoDB:', params.Item);
 
     return event;
   } catch (error) {
-    console.error('Error adding user to DynamoDB:', error);
+    logger.error('Error adding user to DynamoDB:', error);
 
     throw new Error('Failed to add user to DynamoDB');
   }
 };
+

@@ -1,5 +1,6 @@
-import DAASClient from "./daasClient.mjs";
-import { CONFIG } from "../constants/index.mjs";
+import DAASClient from './daasClient.mjs';
+import { CONFIG } from '../constants/index.mjs';
+import { logger } from '../../src/server.mjs';
 
 // Instantiate the DAAS client using the CONFIG object
 const client = new DAASClient({
@@ -10,7 +11,7 @@ const client = new DAASClient({
 
 export const handler = async (event) => {
   try {
-    console.log(JSON.stringify(event, null, 2));
+    logger.info(JSON.stringify(event, null, 2));
 
     // Example: Call the getVinInfo function
     const data = await client.getVinInfo();
@@ -20,10 +21,11 @@ export const handler = async (event) => {
       body: JSON.stringify(data),
     };
   } catch (error) {
-    console.error("Error:", error.message);
+    logger.error('Error:', error.message);
     return {
       statusCode: error.response?.status || 500,
       body: JSON.stringify({ error: error.message }),
     };
   }
 };
+

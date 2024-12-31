@@ -6,9 +6,9 @@ extendZodWithOpenApi(z);
 
 export const RegisterUserValidationSchema = z
   .object({
-    firstName: z.string().optional(),
+    username: commonValidations.username,
 
-    lastName: z.string().optional(),
+    name: z.string().optional(),
 
     email: z.string().email('Invalid email address'),
 

@@ -20,7 +20,7 @@ authRegistry.registerPath({
       - Database Interaction: Save user data to the database.
       - Token Generation: Generate a JWT token and send it in the response.
   `,
-  path: `/api/${API_ROUTES.AUTH}${AUTH_PATHS.REGISTER}`,
+  path: `/api${API_ROUTES.AUTH}${AUTH_PATHS.REGISTER}`,
   request: {
     body: {
       description: 'User registration details',
@@ -105,7 +105,7 @@ authRegistry.registerPath({
       - Validation: Ensure at least one of email, username, or phone is provided along with the password.
       - Authentication: Verify the user's credentials and generate an access token if valid.
   `,
-  path: `/api/${API_ROUTES.AUTH}${AUTH_PATHS.LOGIN}`,
+  path: `/api${API_ROUTES.AUTH}${AUTH_PATHS.LOGIN}`,
   request: {
     body: {
       description: 'User login details',

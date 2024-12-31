@@ -1,39 +1,33 @@
 import dotenv from 'dotenv';
-import { cleanEnv, host, num, port, str, testOnly, url } from 'envalid';
+import { cleanEnv, host, num, port, str, testOnly } from 'envalid';
 import fs from 'fs';
 
 const nodeEnvironment = process.env.NODE_ENV || 'development';
 
-const envPath = process.env.NODE_ENV ? `.env.${nodeEnvironment}` : '.env';
+if (nodeEnvironment !== 'production') {
+  const envPath = process.env.NODE_ENV ? `.env.${nodeEnvironment}` : '.env';
 
-if (envPath && fs.existsSync(envPath)) {
-  dotenv.config({ path: envPath });
-} else {
-  if (nodeEnvironment !== 'production') {
+  if (envPath && fs.existsSync(envPath)) {
+    dotenv.config({ path: envPath });
+  } else {
     console.error(`Environment file .env.${process.env.NODE_ENV} not found`);
   }
 }
 
 export const env = cleanEnv(process.env, {
-  AWS_REGION: str({ devDefault: testOnly('ap-southeast-1') }),
-
-  DYNAMO_ENDPOINT: url({ devDefault: testOnly('http://localhost:8000') }),
-
-  API_BASE_URL: url({ devDefault: testOnly('http://localhost:4000/api') }),
-
-  DAAS_PUBLIC_KEY: str({ devDefault: testOnly('') }),
-  DAAS_PRIVATE_KEY: str({ devDefault: testOnly('') }),
-  DAAS_BASE_URL: url({ devDefault: testOnly('') }),
+  AWS_REGION: str({ devDefault: testOnly('ap-south-1') }),
 
   NODE_ENV: str({
     devDefault: testOnly('test'),
     choices: ['development', 'production', 'test'],
+    optional: true,
   }),
-  PORT: port({ devDefault: testOnly(3000) }),
+
+  PORT: port({ devDefault: testOnly(4000) }),
   HOST: host({ devDefault: testOnly('localhost') }),
 
   CORS_ORIGIN: str({
-    devDefault: testOnly('http://localhost:3000;http://localhost:3001'),
+    devDefault: testOnly('http://localhost:3000'),
   }),
 
   COMMON_RATE_LIMIT_MAX_REQUESTS: num({ devDefault: testOnly(1000) }),

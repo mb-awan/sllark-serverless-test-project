@@ -7,6 +7,7 @@ import {
   ResponseStatus,
   ServiceResponse,
 } from '../../commons/utils/serviceResponse.mjs';
+
 import { handleServiceResponse } from '../../commons/utils/httpHandlers.mjs';
 import { API_ROUTES } from '../../commons/constants/common.mjs';
 import { createApiResponse } from '../../api-docs/openAPIResponseBuilders.mjs';
@@ -18,7 +19,7 @@ export const healthCheckRouter = (() => {
 
   healthCheckRegistry.registerPath({
     method: 'get',
-    path: `/api/${API_ROUTES.HEALTH_CHECK}`,
+    path: `/api${API_ROUTES.HEALTH_CHECK}`,
     tags: ['Health Check'],
     responses: createApiResponse(z.null(), 'Success'),
   });

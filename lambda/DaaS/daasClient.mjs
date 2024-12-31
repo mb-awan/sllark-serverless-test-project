@@ -1,10 +1,11 @@
-import crypto from "crypto";
-import axios from "axios";
+import crypto from 'crypto';
+import axios from 'axios';
+import { logger } from '../../src/server.mjs';
 
 class DAASClient {
   constructor({ publicKey, privateKey, baseUrl }) {
     if (!publicKey || !privateKey || !baseUrl) {
-      throw new Error("Public key, private key, and base URL are required");
+      throw new Error('Public key, private key, and base URL are required');
     }
     this.publicKey = publicKey;
     this.privateKey = privateKey;
@@ -21,12 +22,12 @@ class DAASClient {
     const epoch = Math.floor(Date.now() / 1000); // Current Unix timestamp
     const signatureData = `${this.publicKey}\n${httpVerb}\n${epoch}\n${uriPath}`;
     const hash = crypto
-      .createHmac("sha256", this.privateKey)
+      .createHmac('sha256', this.privateKey)
       .update(signatureData)
-      .digest("base64");
+      .digest('base64');
 
     return {
-      Scheme: "Shared",
+      Scheme: 'Shared',
       XDate: epoch,
       ApiKey: this.publicKey,
       Sig: encodeURIComponent(hash), // Ensure proper URI encoding
@@ -53,7 +54,7 @@ class DAASClient {
     const config = {
       method: httpVerb.toLowerCase(),
       url: url.toString(),
-      headers: { "Content-Type": "application/json" }, // Optional, based on API requirements
+      headers: { 'Content-Type': 'application/json' }, // Optional, based on API requirements
     };
 
     try {
@@ -61,7 +62,7 @@ class DAASClient {
       return response.data;
     } catch (error) {
       if (error.response) {
-        console.error(
+        logger.error(
           `Error: ${error.response.status} - ${error.response.data}`
         );
       }
@@ -71,8 +72,9 @@ class DAASClient {
 
   // Example methods for specific API interactions
   async getVinInfo() {
-    return this.request("GET", "/Information/Vehicles/Search/ByVIN");
+    return this.request('GET', '/Information/Vehicles/Search/ByVIN');
   }
 }
 
 export default DAASClient;
+

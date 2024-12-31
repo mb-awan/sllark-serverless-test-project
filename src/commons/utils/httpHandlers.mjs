@@ -1,5 +1,5 @@
 import { StatusCodes } from 'http-status-codes';
-import { ResponseStatus, ServiceResponse } from './ServiceResponse.mjs';
+import { ResponseStatus, ServiceResponse } from './serviceResponse.mjs';
 
 // Function to handle service responses
 export const handleServiceResponse = (serviceResponse, response) => {
