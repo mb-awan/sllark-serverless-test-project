@@ -6,7 +6,11 @@ export const API_ROUTES = {
 };
 
 export const TABLES = {
-  ALIGNMENT: { name: 'alignments_table', index: 'alignmentId' },
+  ALIGNMENT: {
+    name: 'alignments_table',
+    index: 'alignmentId',
+    secondIndex: 'technicianId',
+  },
   STEPS: { name: 'steps_table', index: 'stepId' },
   TELEMETRY: { name: 'telemetry_table', index: 'telemetryId' },
   USERS: { name: 'users_table', index: 'userId', secondIndex: 'email' },

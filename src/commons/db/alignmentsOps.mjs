@@ -36,10 +36,10 @@ export async function createAlignmentRecord(alignment) {
     return alignment;
   } catch (error) {
     if (error.name === 'ConditionalCheckFailedException') {
-      logger.error(
+      logger.info(
         `Alignment with ID "${alignment.alignmentId}" already exists.`
       );
-      throw new Error('Alignment already exists.');
+      return { alreadyExists: true };
     }
     logger.error(`Error creating alignment:`, error.message);
     throw error;
@@ -54,7 +54,7 @@ export async function createAlignmentRecord(alignment) {
 export async function listAlignmentsByTechnician(technicianId = null) {
   try {
     const params = {
-      TableName: TABLE_NAMES.ALIGNMENT.name,
+      TableName: TABLES.ALIGNMENT.name,
       ...(technicianId && {
         IndexName: 'technicianId-index', // Ensure this index exists
         KeyConditionExpression: 'technicianId = :technicianId',

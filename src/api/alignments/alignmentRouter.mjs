@@ -5,6 +5,7 @@ import {
   CreateAlignmentValidationSchema,
 } from './alignmentSchemas.mjs';
 import { validateRequest } from '../../commons/utils/httpHandlers.mjs';
+import { authenticate } from '../../commons/middleware/authenticate.mjs';
 
 export const ALIGNMENT_PATHS = {
   CREATE: '/',
@@ -16,12 +17,14 @@ export const alignmentRouter = (() => {
 
   router.post(
     ALIGNMENT_PATHS.CREATE,
+    authenticate,
     validateRequest(CreateAlignmentValidationSchema),
     createAlignment
   );
 
   router.get(
     ALIGNMENT_PATHS.LIST,
+    authenticate,
     validateRequest(ListAlignmentsValidationSchema),
     listAlignments
   );

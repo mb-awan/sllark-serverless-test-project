@@ -21,7 +21,7 @@ export const createAlignment = async (req, res) => {
 
     await ensureTableExists(TABLES.ALIGNMENT);
 
-    const alignment = {
+    const newAlignment = {
       alignmentId,
       vehicleVin,
       technicianId,
@@ -30,12 +30,20 @@ export const createAlignment = async (req, res) => {
       status,
     };
 
-    const createdAlignment = await createAlignmentRecord(alignment);
+    const alignment = await createAlignmentRecord(newAlignment);
+
+    if (alignment.alreadyExists) {
+      return APIResponse.error(
+        res,
+        'Conflict - Alignment ID already exists',
+        StatusCodes.CONFLICT
+      );
+    }
 
     return APIResponse.success(
       res,
       'Alignment session created successfully',
-      createdAlignment,
+      alignment,
       StatusCodes.CREATED
     );
   } catch (error) {
@@ -50,8 +58,6 @@ export const listAlignments = async (req, res) => {
     await ensureTableExists(TABLES.ALIGNMENT);
 
     const alignments = await listAlignmentsByTechnician(technicianId);
-
-    console.log({ alignments });
 
     return APIResponse.success(
       res,

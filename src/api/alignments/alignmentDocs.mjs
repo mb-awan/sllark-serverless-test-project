@@ -20,6 +20,7 @@ alignmentRegistry.registerPath({
       - Store the alignment details in DynamoDB.
       - Return the created alignment session details.
   `,
+  security: [{ bearerAuth: [] }],
   path: `/api${API_ROUTES.ALIGNMENT}${ALIGNMENT_PATHS.CREATE}`,
   request: {
     body: {
@@ -64,6 +65,28 @@ alignmentRegistry.registerPath({
         },
       },
     },
+    401: {
+      description: 'Unauthorized - Access token is missing or invalid',
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.boolean().default(false),
+            message: z.string(),
+          }),
+        },
+      },
+    },
+    409: {
+      description: 'Conflict - Alignment session already exists',
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.boolean().default(false),
+            message: z.string(),
+          }),
+        },
+      },
+    },
     500: {
       description: 'Internal server error - An unexpected error occurred',
       content: {
@@ -90,6 +113,7 @@ alignmentRegistry.registerPath({
       - Return the list of alignment sessions.
   `,
   path: `/api${API_ROUTES.ALIGNMENT}${ALIGNMENT_PATHS.LIST}`,
+  security: [{ bearerAuth: [] }],
   request: {
     query: ListAlignmentsValidationSchema,
   },
@@ -124,6 +148,17 @@ alignmentRegistry.registerPath({
             success: z.boolean().default(false),
             message: z.string(),
             errors: z.array(z.string()).optional(),
+          }),
+        },
+      },
+    },
+    401: {
+      description: 'Unauthorized - Access token is missing or invalid',
+      content: {
+        'application/json': {
+          schema: z.object({
+            success: z.boolean().default(false),
+            message: z.string(),
           }),
         },
       },
