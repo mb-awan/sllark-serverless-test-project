@@ -1,11 +1,11 @@
 import { logger } from '../../server.mjs';
-import { TABLE_NAMES } from '../constants/common.mjs';
+import { TABLES } from '../constants/common.mjs';
 import { ensureTableExists } from './commonOps.mjs';
 
 // Just to Test the connection
 const testConnection = async () => {
   try {
-    const tables = Object.values(TABLE_NAMES);
+    const tables = Object.values(TABLES);
     await Promise.all(
       tables.map((table) => ensureTableExists(table, { log: false }))
     );

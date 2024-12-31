@@ -21,6 +21,11 @@ export const healthCheckRouter = (() => {
     method: 'get',
     path: `/api${API_ROUTES.HEALTH_CHECK}`,
     tags: ['Health Check'],
+    description: `
+      Check the health of the service.
+      Workflow:
+        - Return a success response.
+    `,
     responses: createApiResponse(z.null(), 'Success'),
   });
 

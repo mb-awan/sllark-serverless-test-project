@@ -5,9 +5,14 @@ import {
 
 import { healthCheckRegistry } from '../api/healthCheck/healthCheckRouter.mjs';
 import { authRegistry } from '../api/auth/authDocs.mjs';
+import { alignmentRegistry } from '../api/alignments/alignmentDocs.mjs';
 
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([healthCheckRegistry, authRegistry]);
+  const registry = new OpenAPIRegistry([
+    healthCheckRegistry,
+    authRegistry,
+    alignmentRegistry,
+  ]);
 
   // Register the security scheme
   registry.registerComponent('securitySchemes', 'bearerAuth', {

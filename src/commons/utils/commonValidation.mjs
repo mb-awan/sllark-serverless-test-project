@@ -11,7 +11,8 @@ const UsernameValidationShema = z
   .string({ required_error: 'username is required' })
   .regex(/^[^\sA-Z]*$/, "Username can't contain spaces or uppercase letters")
   .min(3)
-  .max(50);
+  .max(50)
+  .default('string');
 
 const UserUniqueSearchKeys = z
   .object({

@@ -6,7 +6,7 @@ import {
   hashPassword,
   isValidPassword,
 } from '../../commons/utils/auth.mjs';
-import { TABLE_NAMES, USER_ROLES } from '../../commons/constants/common.mjs';
+import { TABLES, USER_ROLES } from '../../commons/constants/common.mjs';
 import { getUser, createUser } from '../../commons/db/usersOps.mjs';
 import { ensureTableExists } from '../../commons/db/commonOps.mjs';
 
@@ -14,7 +14,7 @@ export const registerUser = async (req, res) => {
   try {
     const { username, email, name, password } = req.body;
 
-    await ensureTableExists(TABLE_NAMES.USERS);
+    await ensureTableExists(TABLES.USERS);
 
     const hashedPassword = await hashPassword(password);
 
@@ -29,7 +29,7 @@ export const registerUser = async (req, res) => {
 
     const user = await createUser(newUser);
 
-    if (user.alreadyExists) {
+    if (user?.alreadyExists) {
       return APIResponse.error(
         res,
         'User already exists',
@@ -54,7 +54,7 @@ export const loginUser = async (req, res) => {
   try {
     const { identifier, password } = req.body;
 
-    await ensureTableExists(TABLE_NAMES.USERS);
+    await ensureTableExists(TABLES.USERS);
 
     const user = await getUser(identifier);
 

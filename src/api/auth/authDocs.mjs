@@ -10,20 +10,21 @@ import { API_ROUTES } from '../../commons/constants/common.mjs';
 
 export const authRegistry = new OpenAPIRegistry();
 
-// Register login path documentation
+// Register endpoint documentation
 authRegistry.registerPath({
   method: 'post',
   description: `
-    This endpoint allows users to register by providing their information for registration:
-      - Validation: Validate all fields.
-      - Password Handling: Hash the password securely before storing it.
-      - Database Interaction: Save user data to the database.
-      - Token Generation: Generate a JWT token and send it in the response.
+    Register a new user by providing the required details.
+    Workflow:
+      - Validate input fields.
+      - Hash the user's password securely before storing it.
+      - Save user details in the database.
+      - Generate and return a JWT token for authentication.
   `,
   path: `/api${API_ROUTES.AUTH}${AUTH_PATHS.REGISTER}`,
   request: {
     body: {
-      description: 'User registration details',
+      description: 'Payload for user registration',
       content: {
         'application/json': {
           schema: RegisterUserValidationSchema,
@@ -33,62 +34,52 @@ authRegistry.registerPath({
   },
   tags: ['Auth'],
   responses: {
-    200: {
-      description: 'User registration successful',
+    201: {
+      description: 'User registered successfully',
       content: {
         'application/json': {
           schema: z.object({
-            success: z.boolean(),
+            success: z.boolean().default(true),
             message: z.string(),
-            token: z.string(),
+            data: z
+              .object({
+                token: z.string(),
+              })
+              .nullable(),
           }),
         },
       },
     },
     400: {
-      description: 'Invalid input',
+      description: 'Bad request - Invalid input or validation errors',
       content: {
         'application/json': {
           schema: z.object({
             success: z.boolean().default(false),
             message: z.string(),
-            responseObject: z.object({}).nullable().optional(),
-            statusCode: z.number().optional(),
-          }),
-        },
-      },
-    },
-    404: {
-      description: 'Not found',
-      content: {
-        'application/json': {
-          schema: z.object({
-            success: z.boolean(),
-            message: z.string(),
-            responseObject: z.object({}).nullable(),
-            statusCode: z.number(),
+            errors: z.array(z.string()).optional(),
           }),
         },
       },
     },
     409: {
-      description: 'Conflict: User already exists',
+      description: 'Conflict - User already exists',
       content: {
         'application/json': {
           schema: z.object({
-            success: z.boolean(),
+            success: z.boolean().default(false),
             message: z.string(),
           }),
         },
       },
     },
     500: {
-      description: 'Internal server error',
+      description: 'Internal server error - An unexpected error occurred',
       content: {
         'application/json': {
           schema: z.object({
+            success: z.boolean().default(false),
             message: z.string(),
-            success: z.boolean(),
             error: z.object({}).nullable(),
           }),
         },
@@ -97,18 +88,20 @@ authRegistry.registerPath({
   },
 });
 
-// login path documentation
+// Login endpoint documentation
 authRegistry.registerPath({
   method: 'post',
   description: `
-    This endpoint allows users to login by providing their credentials:
-      - Validation: Ensure at least one of email, username, or phone is provided along with the password.
-      - Authentication: Verify the user's credentials and generate an access token if valid.
+    Log in a user by validating their credentials.
+    Workflow:
+      - Validate input fields.
+      - Authenticate the user using the provided identifier and password.
+      - Generate and return a JWT token upon successful authentication.
   `,
   path: `/api${API_ROUTES.AUTH}${AUTH_PATHS.LOGIN}`,
   request: {
     body: {
-      description: 'User login details',
+      description: 'Payload for user login',
       content: {
         'application/json': {
           schema: LoginUserValidationSchema,
@@ -119,34 +112,37 @@ authRegistry.registerPath({
   tags: ['Auth'],
   responses: {
     200: {
-      description: 'Logged in successfully',
+      description: 'Login successful - Access token generated',
       content: {
         'application/json': {
           schema: z.object({
-            success: z.boolean(),
+            success: z.boolean().default(true),
             message: z.string(),
-            token: z.string().nullable(),
-            TFAEnabled: z.boolean(),
+            data: z
+              .object({
+                token: z.string(),
+              })
+              .nullable(),
+            TFAEnabled: z.boolean().default(false),
             role: z.string(),
           }),
         },
       },
     },
     400: {
-      description: 'Invalid input',
+      description: 'Bad request - Invalid input or validation errors',
       content: {
         'application/json': {
           schema: z.object({
             success: z.boolean().default(false),
             message: z.string(),
-            responseObject: z.object({}).nullable().optional(),
-            statusCode: z.number().optional(),
+            errors: z.array(z.string()).optional(),
           }),
         },
       },
     },
     403: {
-      description: 'User is blocked',
+      description: 'Forbidden - User account is blocked',
       content: {
         'application/json': {
           schema: z.object({
@@ -157,7 +153,7 @@ authRegistry.registerPath({
       },
     },
     404: {
-      description: 'Invalid Credentials',
+      description: 'Unauthorized - Invalid credentials',
       content: {
         'application/json': {
           schema: z.object({
@@ -168,7 +164,7 @@ authRegistry.registerPath({
       },
     },
     500: {
-      description: 'Internal server error',
+      description: 'Internal server error - An unexpected error occurred',
       content: {
         'application/json': {
           schema: z.object({

@@ -15,37 +15,55 @@ const dynamoDBClient = new DynamoDBClient({
 
 /**
  * Check if a DynamoDB table exists; if not, create it.
- * @param {string} tableName - The name of the DynamoDB table.
+ * @param {Object} table - The information of the DynamoDB table.
+ * @param {boolean} [options.log=true] - Whether to log information.
  * @returns {Promise<void>}
  * @throws {Error}
  */
-export async function ensureTableExists(tableName, options = { log: true }) {
+export async function ensureTableExists(table, options = { log: true }) {
   const { log } = options;
   try {
     // Check if table exists
     const listTablesCommand = new ListTablesCommand({});
     const tables = await dynamoDBClient.send(listTablesCommand);
 
-    if (tables.TableNames.includes(tableName)) {
-      log && logger.info(`Table "${tableName}" already exists.`);
+    if (tables.TableNames.includes(table.name)) {
+      log && logger.info(`Table "${table.name}" already exists.`);
       return;
     }
 
+    // Build the attribute definitions
+    const attributeDefinitions = [
+      { AttributeName: table.index, AttributeType: 'S' }, // Primary key
+      ...(table.secondIndex
+        ? [{ AttributeName: table.secondIndex, AttributeType: 'S' }]
+        : []), // Secondary key
+    ];
+
     // Create table if it doesn't exist
-    log && logger.info(`Table "${tableName}" does not exist. Creating...`);
+    log && logger.info(`Table "${table.name}" does not exist. Creating...`);
     const createTableCommand = new CreateTableCommand({
-      TableName: tableName,
-      AttributeDefinitions: [{ AttributeName: 'userId', AttributeType: 'S' }],
-      KeySchema: [{ AttributeName: 'userId', KeyType: 'HASH' }],
+      TableName: table.name,
+      AttributeDefinitions: attributeDefinitions,
+      KeySchema: [{ AttributeName: table.index, KeyType: 'HASH' }],
+      ...(table.secondIndex && {
+        GlobalSecondaryIndexes: [
+          {
+            IndexName: `${table.secondIndex}-index`, // Dynamic GSI name
+            KeySchema: [{ AttributeName: table.secondIndex, KeyType: 'HASH' }],
+            Projection: { ProjectionType: 'ALL' },
+          },
+        ],
+      }),
       BillingMode: 'PAY_PER_REQUEST',
     });
 
     await dynamoDBClient.send(createTableCommand);
-    log && logger.info(`Table "${tableName}" created successfully.`);
+    log && logger.info(`Table "${table.name}" created successfully.`);
   } catch (error) {
     log &&
       logger.error(
-        `Error ensuring table "${tableName}" exists:`,
+        `Error ensuring table "${table.name}" exists:`,
         error.message
       );
     throw error;
