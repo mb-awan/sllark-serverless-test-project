@@ -101,7 +101,7 @@ To run the project locally:
 ## 📂 Project Structure
 
 ```plaintext
-📁
+📁 Project Root
 ├── 📁 scripts                 # Utility scripts for deployment
 │   └── zip-folder.mjs         # Automates packaging of the Lambda function
 ├── 📁 src                     # Main source code
@@ -110,20 +110,49 @@ To run the project locally:
 │   │   │   ├── openAPIDocumentGenerator.mjs
 │   │   │   ├── openAPIResponseBuilders.mjs
 │   │   │   ├── openAPIRouter.mjs
-│   │   │   ├── 📁 alignments  # Alignment-related API documentation
-│   │   │   ├── 📁 auth        # Authentication-related API documentation
-│   │   │   └── 📁 healthCheck # Health check APIs
+│   │   ├── 📁 auth            # Authentication-related functionality
+│   │   │   ├── 📁 __test__    # Test cases for auth APIs
+│   │   │   │   └── authController.test.mjs
+│   │   │   ├── authController.mjs
+│   │   │   ├── authDocs.mjs
+│   │   │   ├── authRouter.mjs
+│   │   │   ├── authSchemas.mjs
+│   │   ├── 📁 alignments      # Alignment-related functionality
+│   │   │   ├── 📁 __test__    # Test cases for alignments APIs
+│   │   │   │   └── alignmentController.test.mjs
+│   │   │   ├── alignmentController.mjs
+│   │   │   ├── alignmentDocs.mjs
+│   │   │   ├── alignmentRouter.mjs
+│   │   │   ├── alignmentSchemas.mjs
+│   │   └── 📁 healthCheck     # Health check APIs
+│   │       ├── healthCheckRouter.mjs
 │   ├── 📁 commons             # Shared utilities, middleware, and constants
 │   │   ├── 📁 constants       # Constants used across the application
+│   │   │   └── common.mjs
 │   │   ├── 📁 db              # DynamoDB operations and configuration
+│   │   │   ├── alignmentsOps.mjs
+│   │   │   ├── commonOps.mjs
+│   │   │   ├── dynamoDBConfig.mjs
+│   │   │   └── usersOps.mjs
 │   │   ├── 📁 middleware      # Middleware (e.g., rate limiter, error handler)
+│   │   │   ├── authenticate.mjs
+│   │   │   ├── errorHandler.mjs
+│   │   │   └── rateLimiter.mjs
 │   │   └── 📁 utils           # Utility functions
+│   │       ├── auth.mjs
+│   │       ├── commonValidation.mjs
+│   │       ├── envConfig.mjs
+│   │       ├── handleError.mjs
+│   │       ├── httpHandlers.mjs
+│   │       ├── response.mjs
+│   │       └── serviceResponse.mjs
 │   ├── index.mjs              # Entry point for the Lambda function
 │   ├── router.mjs             # Main router for API routes
 │   ├── server.mjs             # Express server configuration (if needed locally)
 │   └── serverless.js          # Serverless framework configuration (optional)
 ├── .env.example               # Template for environment variables
 ├── .gitignore                 # Git ignore file
+├── jest.config.mjs            # Jest configuration for testing
 ├── lambda.zip                 # Packaged Lambda zip file
 ├── package-lock.json          # Node.js dependencies lock file
 ├── package.json               # Node.js dependencies and scripts
